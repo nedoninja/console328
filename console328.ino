@@ -32,6 +32,8 @@ void setup() {
   digitalWrite(resetPin, HIGH);
   pinMode(resetPin, OUTPUT); 
 
+  randomSeed(analogRead(0));
+
 }
 void(* resetFunc) (void) = 0; // reset proc
 
@@ -40,13 +42,16 @@ uint8_t zmey_x = 120 / 2;
 uint8_t zmey_y = 96 / 2;
 bool isZmeyAlive = true;
 int zmey_score = 0;
-vector<int> zmey_coordinates_x;
-vector<int> zmey_coordinates_y;
-int zmey_speed = 1000; // pix in milisec
-bool isLeft = false;
-bool isRight = true;
-bool isUp = false;
-bool isDown = false;
+vector<int> zmey_coordinates_x = {zmey_x};
+vector<int> zmey_coordinates_y = {zmey_y};
+long zmey_speed = 10000; // pix in milisec
+bool isLeftZ = false;
+bool isRightZ = true;
+bool isUpZ = false;
+bool isDownZ = false;
+bool isAppleZ = false;
+uint8_t applez_x;
+uint8_t applez_y;
 
 // menu var
 bool isRes = true;
@@ -143,13 +148,20 @@ void loop() {
         TV.set_pixel(119, i, WHITE);
       }
 
+      if(isAppleZ == false){
+        applez_x = random(1, 119);
+        applez_y = random(11, 95);
+        TV.set_pixel(applez_x, applez_y, WHITE);
+        isAppleZ = true;
+      }
+
       if(upBut && !flag1){
         flag1 = true;
         tone(pizePin, 1000, 985);
-        isUp = true;
-        isDown = false;
-        isRight = false;
-        isLeft = false;
+        isUpZ = true;
+        isDownZ = false;
+        isRightZ = false;
+        isLeftZ = false;
       }
       if(!upBut && flag1){
         flag1 = false;
@@ -158,10 +170,10 @@ void loop() {
       if(leftBut && !flag2){
         flag2 = true;
         tone(pizePin, 1000, 985);
-        isUp = false;
-        isDown = false;
-        isRight = false;
-        isLeft = true;
+        isUpZ = false;
+        isDownZ = false;
+        isRightZ = false;
+        isLeftZ = true;
       }
       if(!leftBut && flag2){
         flag2 = false;
@@ -170,10 +182,10 @@ void loop() {
       if(rigthBut && !flag3){
         flag3 = true;
         tone(pizePin, 1000, 985);
-        isUp = false;
-        isDown = false;
-        isRight = true;
-        isLeft = false;
+        isUpZ = false;
+        isDownZ = false;
+        isRightZ = true;
+        isLeftZ = false;
       }
       if(!rigthBut && flag3){
         flag3 = false;
@@ -182,44 +194,145 @@ void loop() {
       if(downBut && !flag4){
         flag4 = true;
         tone(pizePin, 1000, 985);
-        isUp = false;
-        isDown = true;
-        isRight = false;
-        isLeft = false;
+        isUpZ = false;
+        isDownZ = true;
+        isRightZ = false;
+        isLeftZ = false;
       }
       if(!downBut && flag4){
         flag4 = false;
       }
-      if(zmey_x == 0 || zmey_x == 120 || zmey_y == 0 || zmey_y == 96){
+      if(zmey_x == 0 || zmey_x == 119 || zmey_y == 10 || zmey_y == 95){
         tone(pizePin, 1000, 985); 
         TV.clear_screen();
         isZmeyAlive = false;
       }
-      if(isUp == true){
-        TV.set_pixel(zmey_x, zmey_y, BLACK);
+      if(isUpZ == true){
+        if(zmey_coordinates_x.size() >= 2){
+          uint8_t predxz = zmey_coordinates_x[0];
+          uint8_t predyz = zmey_coordinates_y[0];
+          for(uint8_t i = 1; i < zmey_coordinates_x.size(); i++){
+            uint8_t p_xz = zmey_coordinates_x[i];
+            uint8_t p_yz = zmey_coordinates_y[i];
+            zmey_coordinates_x[i] = predxz;
+            predxz = p_xz;
+            zmey_coordinates_y[i] = predyz;
+            predyz = p_yz;
+            TV.set_pixel(zmey_coordinates_x[i], zmey_coordinates_y[i], BLACK);
+          }   
+        }     
+        if(zmey_coordinates_x.size() == 1){
+          TV.set_pixel(zmey_x, zmey_y, BLACK);
+        }
         zmey_y -= 1;
+        zmey_coordinates_y[0] = zmey_y;
       }
-      if(isDown == true){
-        TV.set_pixel(zmey_x, zmey_y, BLACK);
+      if(isDownZ == true){
+        if(zmey_coordinates_x.size() >= 2){
+          uint8_t predxz = zmey_coordinates_x[0];
+          uint8_t predyz = zmey_coordinates_y[0];
+          for(uint8_t i = 1; i < zmey_coordinates_x.size(); i++){
+            uint8_t p_xz = zmey_coordinates_x[i];
+            uint8_t p_yz = zmey_coordinates_y[i];
+            zmey_coordinates_x[i] = predxz;
+            predxz = p_xz;
+            zmey_coordinates_y[i] = predyz;
+            predyz = p_yz;
+            TV.set_pixel(zmey_coordinates_x[i], zmey_coordinates_y[i], BLACK);
+          }   
+        }     
+        if(zmey_coordinates_x.size() == 1){
+          TV.set_pixel(zmey_x, zmey_y, BLACK);
+        }
         zmey_y += 1;
+        zmey_coordinates_y[0] = zmey_y;
       }
-      if(isRight == true){
-        TV.set_pixel(zmey_x, zmey_y, BLACK);
+      if(isRightZ == true){
+        if(zmey_coordinates_x.size() >= 2){
+          uint8_t predxz = zmey_coordinates_x[0];
+          uint8_t predyz = zmey_coordinates_y[0];
+          for(uint8_t i = 1; i < zmey_coordinates_x.size(); i++){
+            uint8_t p_xz = zmey_coordinates_x[i];
+            uint8_t p_yz = zmey_coordinates_y[i];
+            zmey_coordinates_x[i] = predxz;
+            predxz = p_xz;
+            zmey_coordinates_y[i] = predyz;
+            predyz = p_yz;
+            TV.set_pixel(zmey_coordinates_x[i], zmey_coordinates_y[i], BLACK);
+          }   
+        }     
+        if(zmey_coordinates_x.size() == 1){
+          TV.set_pixel(zmey_x, zmey_y, BLACK);
+        }
         zmey_x += 1;
+        zmey_coordinates_x[0] = zmey_x;
       }
-      if(isLeft == true){
-        TV.set_pixel(zmey_x, zmey_y, BLACK);
+      if(isLeftZ == true){
+        if(zmey_coordinates_x.size() >= 2){
+          uint8_t predxz = zmey_coordinates_x[0];
+          uint8_t predyz = zmey_coordinates_y[0];
+          for(uint8_t i = 1; i < zmey_coordinates_x.size(); i++){
+            uint8_t p_xz = zmey_coordinates_x[i];
+            uint8_t p_yz = zmey_coordinates_y[i];
+            zmey_coordinates_x[i] = predxz;
+            predxz = p_xz;
+            zmey_coordinates_y[i] = predyz;
+            predyz = p_yz;
+            TV.set_pixel(zmey_coordinates_x[i], zmey_coordinates_y[i], BLACK);
+          }   
+        }     
+        if(zmey_coordinates_x.size() == 1){
+          TV.set_pixel(zmey_x, zmey_y, BLACK);
+        }
         zmey_x -= 1;
+        zmey_coordinates_x[0] = zmey_x;
+      }
+      if(zmey_x == applez_x && zmey_y == applez_y){
+        zmey_score += 1;
+        isAppleZ = false;
+        TV.set_pixel(zmey_x, zmey_y, BLACK);
+        tone(pizePin, 1000, 985); 
+        if(isUpZ == true){
+          zmey_coordinates_x.push_back(zmey_coordinates_x[zmey_coordinates_x.size() - 1]);
+          zmey_coordinates_y.push_back(zmey_coordinates_y[zmey_coordinates_y.size() - 1] + 1);
+        }
+        if(isDownZ == true){
+          zmey_coordinates_x.push_back(zmey_coordinates_x[zmey_coordinates_x.size() - 1]);
+          zmey_coordinates_y.push_back(zmey_coordinates_y[zmey_coordinates_y.size() - 1] - 1);
+        }
+        if(isRightZ == true){
+          zmey_coordinates_x.push_back(zmey_coordinates_x[zmey_coordinates_x.size() - 1] - 1);
+          zmey_coordinates_y.push_back(zmey_coordinates_y[zmey_coordinates_y.size() - 1]);
+        }
+        if(isLeftZ == true){
+          zmey_coordinates_x.push_back(zmey_coordinates_x[zmey_coordinates_x.size() - 1] + 1);
+          zmey_coordinates_y.push_back(zmey_coordinates_y[zmey_coordinates_y.size() - 1]);
+        }
+      }
+      if(zmey_coordinates_x.size() >= 2){
+        uint8_t predxz = zmey_coordinates_x[0];
+        uint8_t predyz = zmey_coordinates_y[0];
+        for(uint8_t i = 1; i < zmey_coordinates_x.size(); i++){
+          uint8_t p_xz = zmey_coordinates_x[i];
+          uint8_t p_yz = zmey_coordinates_y[i];
+          zmey_coordinates_x[i] = predxz;
+          predxz = p_xz;
+          zmey_coordinates_y[i] = predyz;
+          predyz = p_yz;
+          TV.set_pixel(zmey_coordinates_x[i], zmey_coordinates_y[i], WHITE);
+        }   
+      }     
+      if(zmey_coordinates_x.size() == 1){
+        TV.set_pixel(zmey_x, zmey_y, WHITE);
       }
       delay(zmey_speed);
-      TV.set_pixel(zmey_x, zmey_y, WHITE);
     }
       if(isZmeyAlive == false){
         TV.set_cursor(35, 96 / 2);
         TV.print("GAME OVER");
         TV.set_cursor(35, (96 / 2) + 10);
         TV.print("score - ");
-        TV.set_cursor(35 + 8, (96/2) + 10);
+        TV.set_cursor(35 + 50, (96/2) + 10);
         TV.print(zmey_score);
       }
       if(okBut && !flag5){
@@ -234,10 +347,9 @@ void loop() {
 
   if(isTankim == true){
     if(okBut && !flag5){
-      TV.clear_screen();
+      tone(pizePin, 1000, 985);
       flag5 = true;
-      isRes = true;
-      isTankim = false;
+      digitalWrite(resetPin, LOW);
     }
     if(!okBut && flag5){
       flag5 = false;
@@ -246,10 +358,9 @@ void loop() {
 
   if(isPacmanm == true){
     if(okBut && !flag5){
-      TV.clear_screen();
+      tone(pizePin, 1000, 985);
       flag5 = true;
-      isRes = true;
-      isPacmanm = false;
+      digitalWrite(resetPin, LOW);
     }
     if(!okBut && flag5){
       flag5 = false;
@@ -258,10 +369,9 @@ void loop() {
 
   if(isTetrism == true){
     if(okBut && !flag5){
-      TV.clear_screen();
+      tone(pizePin, 1000, 985);
       flag5 = true;
-      isRes = true;
-      isTetrism = false;
+      digitalWrite(resetPin, LOW);
     }
     if(!okBut && flag5){
       flag5 = false;
