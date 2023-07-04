@@ -24,7 +24,9 @@ void setup() {
   pinMode(3, INPUT_PULLUP); //left
   pinMode(4, INPUT_PULLUP); //right
   pinMode(5, INPUT_PULLUP); //down
-  pinMode(10, INPUT_PULLUP); //down
+  pinMode(10, INPUT_PULLUP); //ok
+  pinMode(6, INPUT_PULLUP); //up(jostik1,jostik2)
+  pinMode(8, INPUT_PULLUP); //down(jostik1,jostik2)
 
   pizePin = 11; //pisk 
   resetPin = 12; //reset
