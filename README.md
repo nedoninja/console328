@@ -1,5 +1,5 @@
 # console328
-## Open source console, connects to TV via RCA, has a piezo recorder and joystick, several games on board. works with avr controllers. 
+## Open source console, connects to TV via RCA(arduino nano...), has a piezo recorder and joystick, several games on board. works with avr controllers. 
 ## The project is being actively developed, in order to run the code, you need to install the libraries from the libs folder into the arduino ide (or similar) environment and upload the firmware to the controller. https://oshwlab.com/semenovsvatoslav19/console328 - easyeda project. 
 ![Schematic_console328_2023-07-05 (1)-1](https://github.com/nedoninja/console328/assets/84808868/98200141-8515-40dc-9ed3-d5d11373fb3d)
 # standard console scheme
